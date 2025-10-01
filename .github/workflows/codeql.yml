@@ -9,15 +9,15 @@
 # the `language` matrix defined below to confirm you have the correct set of
 # supported CodeQL languages.
 #
-name: "CodeQL"
+name: "CodeQL Analysis"
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main" ]    # jalan otomatis setiap push ke branch main
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main" ]    # jalan juga setiap ada PR
   schedule:
-    - cron: '00 5 * * 0'   # jalan tiap minggu
+    - cron: '0 2 * * 1'     # scan otomatis setiap Senin jam 02:00 UTC
 
 jobs:
   analyze:
@@ -26,12 +26,12 @@ jobs:
     permissions:
       actions: read
       contents: read
-      security-events: write
+      security-events: write   # wajib agar hasil scan muncul di tab "Security"
 
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'javascript', 'python' ]  # sesuaikan dengan project kamu
+        language: [ 'python' ]   # bahasa yang dipindai
 
     steps:
     - name: Checkout repository
@@ -47,3 +47,5 @@ jobs:
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{ matrix.language }}"
